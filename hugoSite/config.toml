@@ -35,7 +35,7 @@ googleAnalytics = "analyticsCode"
   introWide = "/intro-wide.jpg"
 
   # No. of posts to display on intro page
-  introPosts = 3
+  introPosts = 4
 
   # No. of posts to display in lists page
   listPosts = 6
