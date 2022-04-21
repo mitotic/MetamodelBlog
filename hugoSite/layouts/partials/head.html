@@ -23,7 +23,7 @@
 
   {{ $sass := resources.Get "sass/socialshare.scss" }}
   {{ $style := $sass | resources.ToCSS }}
-  <link rel="stylesheet" href="{{ $style.Permalink }}" />
+  <link rel="stylesheet" href="{{ $style.RelPermalink }}" />
 
   {{- $styles := resources.Get "css/styles.css" | postCSS (dict "config" "./assets/css/postcss.config.js") -}}
   {{- if .Site.IsServer }}
@@ -32,7 +32,7 @@
   {{- $styles := $styles| minify | fingerprint | resources.PostProcess -}}
   <link
     rel="stylesheet"
-    href="{{ $styles.Permalink }}"
+    href="{{ $styles.RelPermalink }}"
     integrity="{{ $styles.Data.Integrity }}"
   />
   {{ end -}}
@@ -73,7 +73,7 @@ https://www.kelvinpapp.com/a-dive-into-social-sharing-and-hugo/
 
 <meta name="twitter:title" content="{{ if .Params.Title }}{{ .Params.Title }}{{ else }}{{ $.Title }}{{ end }}" />
 <meta property="og:title" content="{{ if .Params.Title }}{{ .Params.Title }}{{ else }}{{ $.Title }}{{ end }}" />
-<meta property="og:url" content="{{ .Permalink }}" />
+<meta property="og:url" content="{{ .RelPermalink }}" />
 
 {{ if .IsHome }}
 <meta name="twitter:description" content="{{ .Site.Params.Description }}" />
@@ -84,14 +84,14 @@ https://www.kelvinpapp.com/a-dive-into-social-sharing-and-hugo/
 {{ end }}
 
 {{ if .IsHome }}
-<meta name="twitter:image" content="{{if .Site.Params.introPhoto}}{{.Site.Params.introPhoto | absURL}}{{else}}{{.Site.Params.BlogImage | absURL}}{{end}}" />
+<meta name="twitter:image" content="{{if .Site.Params.introPhoto}}{{.Site.Params.introPhoto | relURL}}{{else}}{{.Site.Params.BlogImage | relURL}}{{end}}" />
 {{ else }}
   {{if or .Params.thumbnail .Params.image }}
-<meta name="twitter:image" content="{{(or .Params.thumbnail .Params.image) | absURL}}" />
-<meta property="og:image" content="{{(or .Params.thumbnail .Params.image) | absURL}}" />
+<meta name="twitter:image" content="{{(or .Params.thumbnail .Params.image) | relURL}}" />
+<meta property="og:image" content="{{(or .Params.thumbnail .Params.image) | relURL}}" />
   {{ else }}
-<meta name="twitter:image" content="{{.Site.Params.BlogImage | absURL}}" />
-<meta property="og:image" content="{{.Site.Params.BlogImage | absURL}}" />
+<meta name="twitter:image" content="{{.Site.Params.BlogImage | relURL}}" />
+<meta property="og:image" content="{{.Site.Params.BlogImage | relURL}}" />
   {{ end }}
 {{ end }}
 
@@ -99,31 +99,31 @@ https://www.kelvinpapp.com/a-dive-into-social-sharing-and-hugo/
 {{- $image := false -}}
 {{- if .IsHome -}}
 {{-     $card = "summary_large_image" -}}
-{{-     $image = (or .Site.Params.introWide .Site.Params.BlogImage) | absURL -}}
+{{-     $image = (or .Site.Params.introWide .Site.Params.BlogImage) | relURL -}}
 {{- else if .Params.thumbnail -}}
 {{-     $card = "summary_large_image" -}}
-{{-     $image = .Params.thumbnail | absURL -}}
+{{-     $image = .Params.thumbnail | relURL -}}
 {{- else -}}
 {{-     $images := .Resources.ByType "image" -}}
 {{-     $featured := $images.GetMatch "*/*feature*" -}}
 {{-     with $featured -}}
 {{-         $card = "summary_large_image" -}}
-{{-         $image = $featured.Permalink -}}
+{{-         $image = $featured.RelPermalink -}}
 {{-     else -}}
 {{-         $thumbnail := $images.GetMatch "*thumbnail*" -}}
 {{-         with $thumbnail -}}
 {{-             $card = "summary_large_image" -}}
-{{-             $image = $thumbnail.Permalink -}}
+{{-             $image = $thumbnail.RelPermalink -}}
 {{-             else -}}
-{{-             $image = .Site.Params.BlogImage | absURL -}}
+{{-             $image = .Site.Params.BlogImage | relURL -}}
 {{-         end -}}
 {{-     end -}}
 {{- end -}}
 
 
 <meta name="twitter:card" content="{{$card}}" />
-<meta name="twitter:image" content="{{(or $image .Site.Params.BlogImage) | absURL}}" />
-<meta property="og:image" content="{{(or $image .Site.Params.BlogImage) | absURL}}" />
+<meta name="twitter:image" content="{{(or $image .Site.Params.BlogImage) | relURL}}" />
+<meta property="og:image" content="{{(or $image .Site.Params.BlogImage) | relURL}}" />
 
   {{ template "_internal/schema.html" . }}
 </head>

@@ -2,7 +2,7 @@
   {{ if $.IsHome }}
   <span class="font-light text-2xl">{{ .Site.Params.introTitle }}</span>
   {{ else }}
-  <a href="{{ .Site.Home.Permalink }}" class="capitalize font-extrabold text-2xl">
+  <a href="{{ .Site.Home.RelPermalink }}" class="capitalize font-extrabold text-2xl">
     <img src="{{ .Site.Params.logo }}" alt="{{ .Site.Title }}" class="h-8 max-w-full" />
     {{ end }}
   </a>

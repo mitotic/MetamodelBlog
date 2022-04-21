@@ -1,21 +1,21 @@
 <div class="p-2">
-<a href="{{ .Permalink }}">
+<a href="{{ .RelPermalink }}">
 
 {{- $image := false -}}
 {{- if .IsPage -}}
 {{- if .Params.thumbnail -}}
-{{-     $image = .Params.thumbnail | absURL -}}
+{{-     $image = .Params.thumbnail | relURL -}}
 {{- else -}}
 {{-     $images := .Resources.ByType "image" -}}
 {{-     $featured := $images.GetMatch "*/*feature*" -}}
 {{-     with $featured -}}
-{{-         $image = $featured.Permalink -}}
+{{-         $image = $featured.RelPermalink -}}
 {{-     else -}}
 {{-         $thumbnail := $images.GetMatch "*thumbnail*" -}}
 {{-         with $thumbnail -}}
-{{-             $image = $thumbnail.Permalink -}}
+{{-             $image = $thumbnail.RelPermalink -}}
 {{-             else -}}
-{{-             $image = .Site.Params.BlankImage | absURL -}}
+{{-             $image = .Site.Params.BlankImage | relURL -}}
 {{-         end -}}
 {{-     end -}}
 {{- end -}}
