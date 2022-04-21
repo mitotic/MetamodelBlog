@@ -1,0 +1,129 @@
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="icon" href="{{ if (isset .Site.Params "favicon") }}{{ .Site.Params.favicon }}{{ else }}/favicon.ico{{ end }}">
+
+  <title>
+    {{ block "title" . }} {{- .Title }} - {{ .Site.Title -}} {{ end }}
+  </title>
+  <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{if .IsPage}}{{ .Summary }}{{ else }}{{ with .Site.Params.description }}{{ . }}{{ end }}{{ end }}{{ end -}}" />
+  {{- if .Keywords }}
+  <meta name="keywords" content="{{ delimit .Keywords "," }}" />
+  {{ end -}}
+  {{- if .Params.Author }}
+  <meta name="author" content="{{ .Params.Author}}" />
+  {{ end -}}
+  
+  {{ hugo.Generator }}
+
+<style>
+  ul.mobile-menu { z-index: 99999; }
+</style>
+
+  {{ $sass := resources.Get "sass/socialshare.scss" }}
+  {{ $style := $sass | resources.ToCSS }}
+  <link rel="stylesheet" href="{{ $style.Permalink }}" />
+
+  {{- $styles := resources.Get "css/styles.css" | postCSS (dict "config" "./assets/css/postcss.config.js") -}}
+  {{- if .Site.IsServer }}
+  <link rel="stylesheet" href="{{ $styles.RelPermalink }}" />
+  {{ else }}
+  {{- $styles := $styles| minify | fingerprint | resources.PostProcess -}}
+  <link
+    rel="stylesheet"
+    href="{{ $styles.Permalink }}"
+    integrity="{{ $styles.Data.Integrity }}"
+  />
+  {{ end -}}
+
+  <!-- Katex support -->
+  {{ if .Params.math }}
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css"
+      integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv"
+      crossorigin="anonymous"
+    >
+
+    <script defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js"
+      integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O"
+      crossorigin="anonymous"
+    ></script>
+
+    <script defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js"
+      integrity="sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF"
+      crossorigin="anonymous"
+      onload="renderMathInElement(document.body);"
+    ></script>
+  {{ end }}
+
+<!--
+  {{ template "_internal/opengraph.html" . }}
+  {{ template "_internal/twitter_cards.html" . }}
+-->
+<!--
+https://onebite.dev/how-to-make-dynamic-twitter-card-for-hugo/
+https://www.kelvinpapp.com/a-dive-into-social-sharing-and-hugo/
+-->
+<meta name="twitter:site" content="{{.Site.Params.website}}" />
+<meta name="twitter:creator" content="{{.Site.Params.creator}}" />
+
+<meta name="twitter:title" content="{{ if .Params.Title }}{{ .Params.Title }}{{ else }}{{ $.Title }}{{ end }}" />
+<meta property="og:title" content="{{ if .Params.Title }}{{ .Params.Title }}{{ else }}{{ $.Title }}{{ end }}" />
+<meta property="og:url" content="{{ .Permalink }}" />
+
+{{ if .IsHome }}
+<meta name="twitter:description" content="{{ .Site.Params.Description }}" />
+<meta property="og:description" content="{{ .Site.Params.Description }}" />
+{{ else }}
+<meta name="twitter:description" content="{{- if .Description }} {{ .Description }} {{ else }} {{ .Site.Params.Description }} - {{ .Title }} {{ end -}}" />
+<meta property="og:description" content="{{- if .Description }} {{ .Description }} {{ else }} {{ .Site.Params.Description }} - {{ .Title }} {{ end -}}" />
+{{ end }}
+
+{{ if .IsHome }}
+<meta name="twitter:image" content="{{if .Site.Params.introPhoto}}{{.Site.Params.introPhoto | absURL}}{{else}}{{.Site.Params.BlogImage | absURL}}{{end}}" />
+{{ else }}
+  {{if or .Params.thumbnail .Params.image }}
+<meta name="twitter:image" content="{{(or .Params.thumbnail .Params.image) | absURL}}" />
+<meta property="og:image" content="{{(or .Params.thumbnail .Params.image) | absURL}}" />
+  {{ else }}
+<meta name="twitter:image" content="{{.Site.Params.BlogImage | absURL}}" />
+<meta property="og:image" content="{{.Site.Params.BlogImage | absURL}}" />
+  {{ end }}
+{{ end }}
+
+{{- $card := "summary" -}}
+{{- $image := false -}}
+{{- if .IsHome -}}
+{{-     $card = "summary_large_image" -}}
+{{-     $image = (or .Site.Params.introWide .Site.Params.BlogImage) | absURL -}}
+{{- else if .Params.thumbnail -}}
+{{-     $card = "summary_large_image" -}}
+{{-     $image = .Params.thumbnail | absURL -}}
+{{- else -}}
+{{-     $images := .Resources.ByType "image" -}}
+{{-     $featured := $images.GetMatch "*/*feature*" -}}
+{{-     with $featured -}}
+{{-         $card = "summary_large_image" -}}
+{{-         $image = $featured.Permalink -}}
+{{-     else -}}
+{{-         $thumbnail := $images.GetMatch "*thumbnail*" -}}
+{{-         with $thumbnail -}}
+{{-             $card = "summary_large_image" -}}
+{{-             $image = $thumbnail.Permalink -}}
+{{-             else -}}
+{{-             $image = .Site.Params.BlogImage | absURL -}}
+{{-         end -}}
+{{-     end -}}
+{{- end -}}
+
+
+<meta name="twitter:card" content="{{$card}}" />
+<meta name="twitter:image" content="{{(or $image .Site.Params.BlogImage) | absURL}}" />
+<meta property="og:image" content="{{(or $image .Site.Params.BlogImage) | absURL}}" />
+
+  {{ template "_internal/schema.html" . }}
+</head>

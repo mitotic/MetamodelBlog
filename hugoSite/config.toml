@@ -1,0 +1,107 @@
+baseurl = "https://blog.domain/"
+languageCode = "en-us"
+defaultContentLanguage = "en-us"
+metaDataFormat = "yaml"
+
+title = "Meta Blog"
+theme = "blist"
+
+googleAnalytics = "analyticsCode"
+
+[params]
+  # Enable the darkmode toggle in header
+  darkModeToggle = true
+  
+  # Enable search in header
+  enableSearch = true
+
+  website = "blog.domain"
+  creator = "Blog Author"
+
+  # Custom copyright - optional
+  copyright = "Copyright © 2022 -Blog Author"
+  favicon = "/favicon.ico"
+
+  # Color for the intro details and social links block, not applicable for dark mode
+  # Supported values: Any color from TailwindCSS default colors
+  # Reference: https://tailwindcss.com/docs/customizing-colors
+  ascentColor = "bg-blue-100"
+
+  logo = "/blog-banner.png"
+
+  introTitle = "blog.domain"
+  introSubtitle = "A blog about the science and philosophy of climate and other models
+  introPhoto = "/intro.jpg"
+  introWide = "/intro-wide.jpg"
+
+  # No. of posts to display on intro page
+  introPosts = 3
+
+  # No. of posts to display in lists page
+  listPosts = 6
+
+  # For Twitter card
+  description = "A blog about nothing"
+  blankImage = "/default-image.png"
+  blogImage = "/blog-card.png"
+  blogLogo = "/blog-logo.png"
+  blogBanner = "/blog-widebanner.png"
+
+  # Directory (type) containing blog posts
+  blogDir = "posts"
+
+  twitterHandle = "BlogAuthor"
+  substackPub = "substackName"
+
+# Remark 42
+# https://blog.lasall.dev/post/hugo-and-comments-with-remark42/
+# https://remark42.com/docs/getting-started/installation/
+  remark42SiteID = "remark42.blog.domain"
+  remark42Url = "https://blog.domain/remark42"
+
+[params.homepage.social]
+  # Global social params
+  title = "Follow:"
+  description = ""
+  twitter = "https://twitter.com/blogauthor"
+  substack = "substack.blog.domain"
+
+[[menu.main]]
+  name = "Posts"
+  url = "/posts"
+  weight = 1
+
+[[menu.main]]
+  name = "Tags"
+  url = "/tags"
+  weight = 2
+
+[[menu.main]]
+  name = "About"
+  url = "/page/about"
+  weight = 3
+
+[[menu.main]]
+  name = "Policy"
+  url = "/page/policy"
+  weight = 4
+
+[[menu.main]]
+  name = "Links"
+  url = "/page/links"
+  weight = 5
+
+[build]
+  writeStats = true
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+# syntax highlight settings
+[markup]
+  [markup.highlight]
+    style = "dracula"
+  [markup.goldmark.renderer]
+    # Enable to include inline HTML
+    unsafe = true
+
