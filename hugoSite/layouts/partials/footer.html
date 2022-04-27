@@ -1,18 +1,19 @@
 <footer class="container p-6 mx-auto flex justify-between items-center">
   <span class="text-sm font-light">
-  The
-  <a href="https://en.wikipedia.org/wiki/Spherical_cow"><em>spherical cow</em></a>
-  on the logo is a metaphor for a simple model.
-  This website was generated using
-  <a href="https://gohugo.io/"><em>Hugo</em></a>
-  with a customized
+  This website was generated using open-source
+  <a href="https://gohugo.io/"><em>Hugo</em></a> software, with a
+  <a href="https://github.com/mitotic/MetamodelBlog"><em>customized</em></a> version 
+  of the
   <a href="https://github.com/apvarun/blist-hugo-theme"><em>Blist</em></a>
-  theme. 
+  theme.
+ 
     {{ if (isset .Site.Params "copyright") }}
-    {{ .Site.Params.copyright }}
+    {{ .Site.Params.copyright }}.
     {{ else }}
     {{ dateFormat "2006" now }} © {{ .Site.Title }}
     {{ end }}
+  (The <a href="https://en.wikipedia.org/wiki/Spherical_cow">spherical cow</a>
+  on the logo is a metaphor for a simple model.)
   </span>
   <span onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="p-1 cursor-pointer">
     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" stroke-width="1.5"
@@ -79,7 +80,14 @@
   }
   if(mobileMenu && mobileMenuButton){
     mobileMenuButton.addEventListener('click', toggleMenu)
+}
+
+  // WORKAROUND for mobile search
+  document.querySelector('.open-search').addEventListener('click', openSearchMobile);
+  function openSearchMobile() {
+     toggleMenu();
   }
+
 </script>
 
 {{ if (and .Site.Params.remark42SiteID .Params.comments) }}
