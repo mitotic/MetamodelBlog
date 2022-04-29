@@ -1,4 +1,15 @@
 <section class="dark:bg-gray-850">
+
+
+  <!--
+  <div class="text-center mb-8 px-10">
+     <img src="{{.Site.Params.logo}}" class="mx-auto w-4/5">
+      <h1 class="text-4xl font-bold mb-4"></h1>
+      <p class="font-light text-lg">{{ .Site.Params.introSubtitle }}</p>
+      <hr>
+  </div>
+-->
+
   <div class="container max-w-screen-lg mx-auto px-6 py-12 grid md:grid-cols-2 gap-10 lg:gap-20 items-center">
     <div>
       <img src="{{.Site.Params.logo}}">
@@ -6,6 +17,7 @@
       <p class="font-light text-lg">{{ .Site.Params.introSubtitle }}</p>
 
     </div>
-    <img class="rounded-lg shadow-sm" src="{{ .Site.Params.introPhoto }}" alt="{{ .Site.Params.Title }}" />
+    <img class="rounded-lg shadow-sm mx-auto w-4/5" src="{{ .Site.Params.introPhoto }}" alt="{{ .Site.Params.Title }}" />
   </div>
+  
 </section>
