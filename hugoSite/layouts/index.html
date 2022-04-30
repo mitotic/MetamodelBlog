@@ -43,5 +43,9 @@
   </div>
   {{ end }}
 
+  {{ if $.Site.Params.futurePosts }}
+  {{- partial "future.html" . -}}
+  {{ end }}
+
   {{- partial "social.html" . -}}
 {{ end }}
