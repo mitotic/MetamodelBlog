@@ -2,7 +2,7 @@
   <span class="text-sm font-light">
   This website was generated using open-source
   <a href="https://gohugo.io/"><em>Hugo</em></a> software, with a
-  <a href="https://github.com/mitotic/MetamodelBlog"><em>customized</em></a> version 
+  <a href="https://github.com/mitotic/metablog"><em>customized</em></a> version 
   of the
   <a href="https://github.com/apvarun/blist-hugo-theme"><em>Blist</em></a>
   theme.
@@ -82,9 +82,10 @@
     mobileMenuButton.addEventListener('click', toggleMenu)
 }
 
-  // WORKAROUND for mobile search
-  document.querySelector('.open-search').addEventListener('click', openSearchMobile);
-  function openSearchMobile() {
+  // WORKAROUND for mobile search and mobile dark mode to close mobile menu
+  document.querySelector('.open-search').addEventListener('click', mobileWorkaround); 
+  document.querySelector('.toggle-dark-mode').addEventListener('click', mobileWorkaround); 
+  function mobileWorkaround() {
      toggleMenu();
   }
 
