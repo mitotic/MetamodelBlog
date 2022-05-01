@@ -56,7 +56,7 @@ dark:hover:border-gray-300 dark:hover:text-gray-300"
         </a>
 
 
-  <a href="https://twitter.com/share?url={{ .Permalink }}&text={{ .Title }}&via={{ $.Site.Params.TwitterHandle }}"
+  <a href="https://twitter.com/{{ if .Params.tweetid }}intent/retweet?tweet_id={{- .Params.tweetid -}}{{ else }}share?url={{ .Permalink }}&text={{ .Title }}&via={{ $.Site.Params.TwitterHandle }}{{ end }}"
   target="_blank"
   class="inline-block hover:border-gray-800 cursor-pointer transition-colors dark:text-gray-600
   dark:hover:border-gray-300 dark:hover:text-gray-300"
@@ -81,7 +81,7 @@ dark:hover:border-gray-300 dark:hover:text-gray-300"
           </svg>
   </a>
 
-       <span>Share: &nbsp; &nbsp;</span>
+       <!-- <span>Share: &nbsp; &nbsp;</span> -->
 
 </div>
 <br>
