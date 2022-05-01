@@ -12,7 +12,9 @@
 
   <div class="container p-6 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
     {{ range first $.Site.Params.introPosts $allposts }}
-      {{- partial "blog-card.html" . -}}
+      {{ if (not .Params.unlisted) }}
+        {{- partial "blog-card.html" . -}}
+      {{ end }}
     {{ end }}
   </div>
 
@@ -28,7 +30,9 @@
 
     <div class="container p-6 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
       {{ range $featuredposts}}
-        {{- partial "blog-card.html" . -}}
+        {{ if (not .Params.unlisted) }}
+          {{- partial "blog-card.html" . -}}
+        {{ end }}
       {{ end }}
     </div>
   {{- end -}}
