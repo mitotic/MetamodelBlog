@@ -78,7 +78,7 @@
 {{ if .Params.tweetid }}
   &nbsp; 
   <div class="container px-6 py-1 mx-auto max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
-      <div class="text-2xl mb-2" style="color: #1DA1F2">Comment on Twitter (by replying):</div>
+      <div class="text-2xl mb-2" style="color: #1DA1F2">Short comments via Twitter (click on tweet shown below to reply):</div>
   </div>
   <blockquote id="tweet-container" class="twitter-tweet"></blockquote>
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
@@ -102,7 +102,7 @@
 
   {{ if (and .Site.Params.remark42SiteID .Params.comments) }}
   <div class="container px-6 py-1 mx-auto max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
-      <div class="text-2xl mb-2">Comment here (needs login):</div>
+      <div class="text-2xl mb-2">Long comments (needs login):</div>
   </div>
 
         <div id="remark42" class="prose lg:prose-lg mx-auto my-8 dark:prose-dark px-4"></div>
