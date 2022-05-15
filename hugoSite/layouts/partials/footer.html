@@ -28,7 +28,9 @@
 {{- partial "search-ui.html" . -}}
 {{ end }}
 
-{{ template "_internal/google_analytics.html" . }}
+{{ if not .Site.BuildDrafts }}
+  {{ template "_internal/google_analytics.html" . }}
+{{ end }}
 
 {{ if ge (len .Site.Languages) 3 }}
 <script>
