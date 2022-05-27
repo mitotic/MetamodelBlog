@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 # Process Hugo Markdown blog posts to create book using Pandoc
 
-import sys, os, yaml, datetime, subprocess, tempfile
+# Example:
+#   hugo2pandoc.py --last-date --output=book.epub --title=MyBlog --author="My Name" --css=pandoc/book.css pandoc/title.txt content/page/about.md content/posts/firstpost
+
+import sys, os, yaml, datetime, subprocess, tempfile, argparse
 from pathlib import Path
 
 
-def hugo2pandoc(output_file, site_title, site_author, last_date_opt, recent, filenames):
+def hugo2pandoc(output_file, site_title, site_author, css_file, last_date_opt, recent, filenames):
     # Creates modifed copies of markdown files (filenames) in temporary directory
     # making minor changes to Hugo markdown to work with Pandoc by extracting title etc.
     # If last_date_opt is true, add suffix YYYYMMDD to output_file (before extension)
@@ -138,7 +141,7 @@ def hugo2pandoc(output_file, site_title, site_author, last_date_opt, recent, fil
         if last_date_opt:
             outpath = Path(outpath.parent / (outpath.stem + '-' + last_date_suffix + outpath.suffix) )
 
-        pandoc_cmd = ['pandoc', '-s', '--css='+str(Path.cwd() /'pandoc/book.css'), '-o', str(Path.cwd() / outpath), '--number-offset='+str(number_offset), '--toc', '--toc-depth=1'] + outnames
+        pandoc_cmd = ['pandoc', '-s', '--css='+str(Path.cwd() / css_file), '-o', str(Path.cwd() / outpath), '--number-offset='+str(number_offset), '--toc', '--toc-depth=1'] + outnames
 
         ##print(pandoc_cmd, file=sys.stderr)
 
@@ -147,3 +150,16 @@ def hugo2pandoc(output_file, site_title, site_author, last_date_opt, recent, fil
         ##print(create_book, file=sys.stderr)
 
         return last_date_suffix
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('files', nargs='+')
+    parser.add_argument('--output', type=str, required=True)
+    parser.add_argument('--title', type=str, required=True, help='site title')
+    parser.add_argument('--author', type=str, required=True, help='site author')
+    parser.add_argument('--css', type=str, required=True, help='CSS file path')
+    parser.add_argument('--last-date', action='store_true', help='append last date to name and return it')
+    parser.add_argument('--recent', type=int)
+    args = parser.parse_args()
+
+    print(hugo2pandoc(args.output, args.title, args.author, args.css, args.last_date, args.recent, args.files))
