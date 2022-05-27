@@ -7,7 +7,7 @@ body {
   adobe-hyphenate: none;
   -moz-hyphens: none;
   hyphens: none;
-  font-size: small;
+  font-size: medium;
 }
 /* Title page */
  #cover-image {width: 100%; }
