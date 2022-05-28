@@ -51,7 +51,7 @@ def blog2book(posts_dir, output_dir, output_file, site_title, site_author, css_f
             if fpath.suffix == '.txt':
                 # Frontmatter for epub (YAML)
                 title_path = fpath
-                sections.append( ('', fpath.name, '') )
+                sections.append( ('', fpath.name, '', '') )
                 unnumbered_count += 1
                 continue
 
@@ -105,6 +105,8 @@ def blog2book(posts_dir, output_dir, output_file, site_title, site_author, css_f
             thumbnail = data.get('thumbnail') or data.get('Thumbnail') or ''
             pubdate = str(pubdate).replace('-','')
 
+            author = data.get('author') or data.get('Author') or site_author
+
             unnumbered = not pubdate or data.get('unnumbered') or data.get('Unnumbered')
 
             ntitle = title
@@ -113,7 +115,7 @@ def blog2book(posts_dir, output_dir, output_file, site_title, site_author, css_f
                 ntitle = ntitle + ' {.unnumbered}'
                 unnumbered_count += 1
 
-            sections.append( (pubdate, outname, title) )
+            sections.append( (pubdate, outname, title, author) )
 
             if thumbnail:
                 textlines = ['![](image/' + Path(thumbnail).name + ')\n\n'] + textlines
@@ -143,7 +145,7 @@ def blog2book(posts_dir, output_dir, output_file, site_title, site_author, css_f
         css_path = str(Path.cwd() / css_file)
         if individual:
             count = 0
-            for pdate, fname, title in sections:
+            for pdate, fname, title, author in sections:
                 if not pdate:
                     continue
                 count += 1
@@ -154,7 +156,7 @@ def blog2book(posts_dir, output_dir, output_file, site_title, site_author, css_f
                     if os.path.isfile(outpath) and pdate <= prev_last_date and not force:
                         continue
                 
-                    pandoc_cmd = ['pandoc', '-s', '-M', 'title='+title, '-M', 'author='+site_title, '--css='+css_path, '-o', str(outpath), '--number-offset='+str(count-1), fname]
+                    pandoc_cmd = ['pandoc', '-s', '-M', 'title='+title, '-M', 'author='+site_title+('/'+author if extn == '.pdf' else ''), '-M', 'rights='+author, '--css='+css_path, '-o', str(outpath), '--number-offset='+str(count-1), fname]
                     ##print(pandoc_cmd, file=sys.stderr)
                     create_book = subprocess.run(pandoc_cmd, text=True, cwd=tmpdirname)
                     print('Created', outpath.name, file=sys.stderr)
@@ -183,7 +185,7 @@ def blog2book(posts_dir, output_dir, output_file, site_title, site_author, css_f
             number_offset = len(sections) - recent - unnumbered_count
             sections = sections[:unnumbered_count] + sections[-recent:]
                 
-        outnames = [fname for (pdate, fname, title) in sections]
+        outnames = [fname for (pdate, fname, title, author) in sections]
 
         outpath = outdir / output_file
         if last_date_file:
