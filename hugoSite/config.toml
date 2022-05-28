@@ -6,7 +6,11 @@ metaDataFormat = "yaml"
 title = "Meta Blog"
 theme = "blist"
 
-googleAnalytics = "analyticsCode"
+googleAnalytics = "G-analyticsCode"
+
+[author]
+  name = "Blog Author"
+  email = "Author@example.com"
 
 [params]
   # Enable the darkmode toggle in header
@@ -14,6 +18,10 @@ googleAnalytics = "analyticsCode"
   
   # Enable search in header
   enableSearch = true
+
+  # Download button menu
+  epub = true
+  pdf = true
 
   website = "blog.domain"
   creator = "Blog Author"
@@ -40,6 +48,12 @@ googleAnalytics = "analyticsCode"
   # No. of posts to display in lists page
   listPosts = 6
 
+  # Describe future posts in layouts/partials/future.html
+  futurePosts = false
+  futureImage = "/futurepost.png"
+  futureTitle = "Coming Attraction"
+  futureSubtitle = "Soon"
+
   # For Twitter card
   description = "A blog about nothing"
   blankImage = "/default-image.png"
@@ -65,6 +79,7 @@ googleAnalytics = "analyticsCode"
   description = ""
   twitter = "https://twitter.com/blogauthor"
   substack = "substack.blog.domain"
+  rss = "index.xml"
 
 [[menu.main]]
   name = "Posts"
@@ -77,19 +92,24 @@ googleAnalytics = "analyticsCode"
   weight = 2
 
 [[menu.main]]
-  name = "About"
-  url = "/page/about"
+  name = "eBook"
+  url = "/page/ebook"
   weight = 3
 
 [[menu.main]]
-  name = "Policy"
-  url = "/page/policy"
+  name = "About"
+  url = "/page/about"
   weight = 4
 
 [[menu.main]]
   name = "Links"
   url = "/page/links"
   weight = 5
+
+[[menu.main]]
+  name = "Policy"
+  url = "/page/policy"
+  weight = 6
 
 [build]
   writeStats = true
