@@ -32,9 +32,10 @@
 
     {{ if .Site.Params.epub }}
     <a href='/ebook/{{ .Date.Format "20060102" }}-{{ if eq .File.BaseFileName "index" }}{{ index (split .File.Path "/" | last 2 | first 1) 0 }}{{ else }}{{ .File.BaseFileName }}{{ end }}.epub'
-  target="_blank" style="color: gray; background-color: lightgray; border-radius: 5px 5px 5px 5px; text-decoration: none; font-weight: inherit; font-size: 0.875rem; line-height: 1.25rem;"
-  class="inline-block text-sm cursor-pointer transition-colors"
-  >
+       target="_blank"
+       style="color: #555555; border-radius: 5px 5px 5px 5px; text-decoration: none; font-weight: inherit; font-size: 0.875rem; line-height: 1.25rem;"
+       class="inline-block text-sm cursor-pointer bg-gray-200 dark:bg-gray-200"
+    >
     &nbsp;ePUB&nbsp;
     </a>
      &nbsp; &bull;
@@ -43,9 +44,10 @@
     {{ if .Site.Params.pdf }}
     &nbsp;
     <a href='/ebook/{{ .Date.Format "20060102" }}-{{ if eq .File.BaseFileName "index" }}{{ index (split .File.Path "/" | last 2 | first 1) 0 }}{{ else }}{{ .File.BaseFileName }}{{ end }}.pdf'
-  target="_blank" style="color: gray; background-color: lightgray; border-radius: 5px 5px 5px 5px; text-decoration: none; font-weight: inherit; font-size: 0.875rem; line-height: 1.25rem;"
-  class="inline-block text-sm cursor-pointer transition-colors"
-  >
+       target="_blank"
+       style="color: #555555; border-radius: 5px 5px 5px 5px; text-decoration: none; font-weight: inherit; font-size: 0.875rem; line-height: 1.25rem;"
+       class="inline-block text-sm cursor-pointer bg-gray-200 dark:bg-gray-200"
+    >
     &nbsp;PDF&nbsp;
     </a>
      &nbsp; &bull;
@@ -97,8 +99,11 @@
 3.9 9.4 7.2 10.7l.7.3-.1.8c-.2 1.6-.5 3-1.1 4.2 3.3-.4 5.2-2.1 6.3-3.5l.3-.4H25c13.5 0 15-8.4 15-12C40 16.5 34.4 12 25
 12z"/></svg>
 
-    <a href="#comments">
-    <span class="remark42__counter" data-url="{{ .Permalink }}"></span>&nbsp;comments
+    <a href="#comments"
+       style="color: #555555; border-radius: 5px 5px 5px 5px; text-decoration: none; font-weight: inherit; font-size: 0.875rem; line-height: 1.25rem;"
+       class="inline-block text-sm cursor-pointer bg-gray-200 dark:bg-gray-200"
+    >
+    &nbsp;<span class="remark42__counter" data-url="{{ .Permalink }}"></span>&nbsp;comments&nbsp;
     </a>
 
     </h5>
