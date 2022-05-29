@@ -10,16 +10,27 @@ from pathlib import Path
 def expand_date(d):
     return d[:4]+'-'+d[4:6]+'-'+d[6:] if d else ''
 
-def blog2book(posts_dir, output_dir, output_file, site_title, site_author, css_file, cover_image, last_date_file, force, individual, recent, filenames):
+def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_author, css_file, cover_image, last_date_file, force, individual, recent, filenames):
     # Creates modifed copies of markdown files (filenames) in temporary directory
     # making minor changes to Hugo markdown to work with Pandoc by extracting title etc.
+    # If output_file has extension .epub or .pdf, only files of that type are created. Otherwise both types are created.
     # If last_date_file is specified, add suffix YYYYMMDD to output_file (before extension)
     # If recent > 0, only output recent files
     # returns last post date (YYYYMMDD) as string
 
     title_name = 'title.txt'
+    extensions = ('.epub', '.pdf')
+    
     outdir = Path.cwd() / Path(output_dir) if output_dir else Path.cwd()
+    outpath = outdir / output_file
 
+    if outpath.suffix in extensions:
+        suffixes = [ outpath.suffix ]
+    else:
+        suffixes = extensions[:]
+
+
+    
     filenames = filenames[:]
     if posts_dir:
         if not os.path.isdir(posts_dir):
@@ -55,7 +66,6 @@ def blog2book(posts_dir, output_dir, output_file, site_title, site_author, css_f
                 continue
 
             if os.path.isdir(fpath):
-                outname = fpath.parent.name + fpath.suffix
                 index_file = filename + '/index.md'
                 if not os.path.isfile(index_file):
                     raise Exception(index_file + ' not found')
@@ -73,6 +83,8 @@ def blog2book(posts_dir, output_dir, output_file, site_title, site_author, css_f
                         os.symlink(postimgdir+'/'+imgfile, destname)
             else:
                 outname = fpath.name
+
+            linkpath = '/' + fpath.parent.name + '/' + fpath.stem
 
             with open(inname, "r") as f:
                 lines = f.readlines()
@@ -133,6 +145,11 @@ def blog2book(posts_dir, output_dir, output_file, site_title, site_author, css_f
 
             textlines = ['# ' + ntitle + '\n\n'] + textlines
 
+            if not unnumbered:
+                textlines += [ '\n\n*Note:* For comments, see the [original blog post]('+site_url+linkpath+'/).\n\n' ]
+
+            textlines += [ '\n\n---\n' ]
+
             with open(Path(tmpdirname) / outname, 'w') as f:
                 f.write(''.join(textlines))
 
@@ -149,7 +166,6 @@ def blog2book(posts_dir, output_dir, output_file, site_title, site_author, css_f
 
         css_path = str(Path.cwd() / css_file)
         pdf_options = [ '-V', 'colorlinks', '-V', 'geometry:margin=1.2in' ]
-        extensions = ('.epub', '.pdf')
 
         if individual:
             count = 0
@@ -164,7 +180,7 @@ def blog2book(posts_dir, output_dir, output_file, site_title, site_author, css_f
                     annotate_image(cover_image, tmpdirname+'/'+imgpath, text=title, feature_image=feature, top_margin=0.075, bot_margin=0.25)
                     pandoc_cmd += [ '--epub-cover-image='+imgpath ]
 
-                for extn in extensions:
+                for extn in suffixes:
                     outpath = outdir / (pdate + '-' + Path(fname).stem + extn)
 
                     if os.path.isfile(outpath) and pdate <= prev_last_date and not force:
@@ -219,12 +235,6 @@ def blog2book(posts_dir, output_dir, output_file, site_title, site_author, css_f
             imgpath = 'image/CoverImage.png'
             annotate_image(cover_image, tmpdirname+'/'+imgpath, text=cover_text, feature_image=last_feature, top_margin=0.075, bot_margin=0.25)
             pandoc_cmd += [ '--epub-cover-image='+imgpath ]
-
-        outpath = outdir / output_file
-        if outpath.suffix in extensions:
-            suffixes = [ outpath.suffix ]
-        else:
-            suffixes = extensions[:]
 
         outprefix = str( Path(outpath.parent / outpath.stem) )
         if last_date_file:
@@ -304,6 +314,7 @@ def annotate_image(cover_image, out_image, text='', feature_image=None, top_marg
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('--url', type=str, required=True, help='site url')
     parser.add_argument('--title', type=str, required=True, help='site title')
     parser.add_argument('--author', type=str, required=True, help='site author')
     parser.add_argument('--posts-dir', type=str, help='posts directory, e.g., content/posts')
@@ -318,7 +329,7 @@ if __name__ == '__main__':
     parser.add_argument('files', nargs='*')
     args = parser.parse_args()
 
-    last_date_suffix = blog2book(args.posts_dir, args.output_dir, args.output, args.title, args.author, args.css, args.cover_image, args.last_date_file, args.force, args.individual, args.recent, args.files)
+    last_date_suffix = blog2book(args.posts_dir, args.output_dir, args.output, args.url, args.title, args.author, args.css, args.cover_image, args.last_date_file, args.force, args.individual, args.recent, args.files)
 
     if args.last_date_file:
         print(last_date_suffix)
