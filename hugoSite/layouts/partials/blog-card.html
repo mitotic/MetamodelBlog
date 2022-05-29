@@ -1,4 +1,4 @@
-<div class="p-2">
+<div class="p-2 mb-8">
 <a href="{{ .RelPermalink }}">
 
 {{- $image := false -}}
@@ -34,6 +34,7 @@
   <div class="my-2 text-xl font-semibold">{{ .Params.title }}</div>
   <div class="">{{ .Params.description }}</div>
 </a>
+
   {{ if .IsTranslated -}}
     <div class="" style="font-style: italic;font-size: smaller;">
       {{- $sortedTranslations := sort .Translations "Site.Language.Weight" -}}
