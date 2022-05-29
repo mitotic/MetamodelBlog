@@ -129,7 +129,6 @@
   {{- partial "social.html" . -}}
 
 
-
 {{ if .Params.tweetid }}
   &nbsp; 
   <div class="container px-6 py-1 mx-auto max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -156,11 +155,11 @@
   {{ end }}
 
   {{ if (and .Site.Params.remark42SiteID .Params.comments) }}
-  <div class="container px-6 py-1 mx-auto max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
+  <div id="comments" class="container px-6 py-1 mx-auto max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
       <div class="text-2xl mb-2">Long comments (needs login):</div>
   </div>
 
-        <div id="remark42" class="prose lg:prose-lg mx-auto my-8 dark:prose-dark px-4"></div>
+  <div id="remark42" class="prose lg:prose-lg mx-auto my-8 dark:prose-dark px-4"></div>
   {{ end }}
 
 {{ end }}
