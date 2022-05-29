@@ -32,7 +32,7 @@
 
     {{ if .Site.Params.epub }}
     <a href='/ebook/{{ .Date.Format "20060102" }}-{{ if eq .File.BaseFileName "index" }}{{ index (split .File.Path "/" | last 2 | first 1) 0 }}{{ else }}{{ .File.BaseFileName }}{{ end }}.epub'
-  target="_blank" style="color: gray; background-color: lightgray; border-radius: 5px 5px 5px 5px; text-decoration: none; font-weight: inherit; font-size: 0.875rem;line-height: 1.25rem;"
+  target="_blank" style="color: gray; background-color: lightgray; border-radius: 5px 5px 5px 5px; text-decoration: none; font-weight: inherit; font-size: 0.875rem; line-height: 1.25rem;"
   class="inline-block text-sm cursor-pointer transition-colors"
   >
     &nbsp;ePUB&nbsp;
@@ -43,7 +43,7 @@
     {{ if .Site.Params.pdf }}
     &nbsp;
     <a href='/ebook/{{ .Date.Format "20060102" }}-{{ if eq .File.BaseFileName "index" }}{{ index (split .File.Path "/" | last 2 | first 1) 0 }}{{ else }}{{ .File.BaseFileName }}{{ end }}.pdf'
-  target="_blank" style="color: gray; background-color: lightgray; border-radius: 5px 5px 5px 5px; text-decoration: none; font-weight: inherit; font-size: 0.875rem;line-height: 1.25rem;"
+  target="_blank" style="color: gray; background-color: lightgray; border-radius: 5px 5px 5px 5px; text-decoration: none; font-weight: inherit; font-size: 0.875rem; line-height: 1.25rem;"
   class="inline-block text-sm cursor-pointer transition-colors"
   >
     &nbsp;PDF&nbsp;
@@ -95,6 +95,36 @@
 
     {{ .Content }}
   </article>
+
+<hr>
+
+  {{ if .PrevPage }}
+  {{ if and (eq .PrevPage.Type "posts") (and (not .PrevPage.Params.draft) (not .PrevPage.Params.unlisted)) }}
+  <div class="mt-2 mb-4 ml-6 mr-6">
+    <a class="link-reverse" href="{{ .PrevPage.Permalink }}?ref=footer">
+    <span class="px-8 py-3 rounded transition-colors text-gray-500 dark:text-gray-400">« Prev:
+    <span class="text-gray-800 dark:text-gray-200">
+	 {{ .PrevPage.Title | truncate 60 "..."}}
+    </span>
+    </span>
+    </a>
+  </div>
+  {{ end }}
+  {{ end }}
+
+  {{ if .NextPage }}
+  {{ if and (eq .NextPage.Type "posts") (and (not .NextPage.Params.draft) (not .NextPage.Params.unlisted)) }}
+  <div class="mt-2 mb-4 ml-6 mr-6">
+    <a class="link-reverse" href="{{ .NextPage.Permalink }}?ref=footer">
+    <span class="px-8 py-3 rounded transition-colors text-gray-500 dark:text-gray-400">» Next:
+    <span class="text-gray-800 dark:text-gray-200">
+	 {{ .NextPage.Title | truncate 60 "..."}}
+    </span>
+    </span>
+    </a>
+  </div>
+  {{ end }}
+  {{ end }}
 
   {{- partial "social.html" . -}}
 
