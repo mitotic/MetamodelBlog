@@ -59,6 +59,7 @@
       document.documentElement.classList.add('dark')
       localStorage.setItem('darkmode', 'dark')
     }
+    if (window.REMARK42 && window.REMARK42.changeTheme) window.REMARK42.changeTheme(localStorage.getItem('darkmode'));
   }
   if (darkmode) {
     darkmode.addEventListener('click', toggleDarkMode);
@@ -96,7 +97,8 @@
   var remark_config = {
     host: {{ .Site.Params.remark42Url }},
     site_id: {{ .Site.Params.remark42SiteID }},
-    url: {{ .Permalink }}
+    url: {{ .Permalink }},
+    components: ['embed', 'counter'],
   };
   remark_config.theme = localStorage.getItem('darkmode') ? localStorage.getItem('darkmode') : 'light';
 

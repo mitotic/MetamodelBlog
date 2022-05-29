@@ -28,8 +28,6 @@ def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_aut
         suffixes = [ outpath.suffix ]
     else:
         suffixes = extensions[:]
-
-
     
     filenames = filenames[:]
     if posts_dir:
@@ -181,9 +179,9 @@ def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_aut
                     pandoc_cmd += [ '--epub-cover-image='+imgpath ]
 
                 for extn in suffixes:
-                    outpath = outdir / (pdate + '-' + Path(fname).stem + extn)
+                    indpath = outdir / (pdate + '-' + Path(fname).stem + extn)
 
-                    if os.path.isfile(outpath) and pdate <= prev_last_date and not force:
+                    if os.path.isfile(indpath) and pdate <= prev_last_date and not force:
                         continue
 
                     pandoc_cmd2 = pandoc_cmd[:]
@@ -193,12 +191,12 @@ def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_aut
                     else:
                         pandoc_cmd2 += ['-M', 'author='+site_title]
 
-                    pandoc_cmd2 += ['-o', str(outpath) ]
+                    pandoc_cmd2 += ['-o', str(indpath) ]
                     pandoc_cmd2 += [ fname ]
 
                     ##print(pandoc_cmd, file=sys.stderr)
                     create_book = subprocess.run(pandoc_cmd2, text=True, cwd=tmpdirname)
-                    print('Created', outpath.name, file=sys.stderr)
+                    print('Created', indpath.name, file=sys.stderr)
 
         if not output_file:
             # No combined output file
@@ -221,7 +219,7 @@ def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_aut
                 f.write(text)
 
         if recent and len(sections) > unnumbered_count + recent:
-            # Retain only 2 most recent posts
+            # Retain only most recent posts
             number_offset = len(sections) - recent - unnumbered_count
             mdfiles = [fname for (pdate, fname, title, author, feature) in sections[-recent:]]
         else:
