@@ -231,16 +231,18 @@ def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_aut
             with open(tmpdirname+'/'+title_path.name, 'w') as f:
                 f.write(text)
 
+        pandoc_cmd = ['pandoc', '-s', '--css='+str(Path.cwd() / css_file), '--toc' ]
+
         if recent and len(sections) > unnumbered_count + recent:
             # Retain only most recent posts
             number_offset = len(sections) - recent - unnumbered_count
             mdfiles = [fname for (pdate, fname, title, author, feature) in sections[-recent:]]
+            pandoc_cmd += [ '--toc-depth=2', '--number-offset='+str(number_offset) ]
         else:
             # All posts
             number_offset = 0
             mdfiles = [fname for (pdate, fname, title, author, feature) in sections]
-
-        pandoc_cmd = ['pandoc', '-s', '--css='+str(Path.cwd() / css_file), '--number-offset='+str(number_offset), '--toc', '--toc-depth=1']
+            pandoc_cmd += [ '--toc-depth=1' ]
 
         if cover_image:
             imgpath = 'image/CoverImage.png'
