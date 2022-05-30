@@ -10,7 +10,7 @@ from pathlib import Path
 def expand_date(d):
     return d[:4]+'-'+d[4:6]+'-'+d[6:] if d else ''
 
-def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_author, css_file, cover_image, last_date_file, force, individual, recent, filenames):
+def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_author, twitter_handle, remarks_json_gzfile, css_file, cover_image, last_date_file, force, individual, recent, filenames):
     # Creates modifed copies of markdown files (filenames) in temporary directory
     # making minor changes to Hugo markdown to work with Pandoc by extracting title etc.
     # If output_file has extension .epub or .pdf, only files of that type are created. Otherwise both types are created.
@@ -28,7 +28,11 @@ def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_aut
         suffixes = [ outpath.suffix ]
     else:
         suffixes = extensions[:]
-    
+
+    remarks_dict = {}
+    if remarks_json_gzfile:
+        remarks_dict = read_remarks(remarks_json_gzfile)
+
     filenames = filenames[:]
     if posts_dir:
         if not os.path.isdir(posts_dir):
@@ -82,7 +86,8 @@ def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_aut
             else:
                 outname = fpath.name
 
-            linkpath = '/' + fpath.parent.name + '/' + fpath.stem
+            link_path = '/' + fpath.parent.name + '/' + fpath.stem
+            link_url = site_url + link_path
 
             with open(inname, "r") as f:
                 lines = f.readlines()
@@ -113,7 +118,12 @@ def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_aut
             pubdate = data.get('date') or data.get('Date') or ''
             thumbnail = data.get('thumbnail') or data.get('Thumbnail') or ''
             card = data.get('card') or data.get('Card') or ''
+            tweetid = data.get('tweetid') or data.get('Tweetid') or ''
             pubdate = str(pubdate).replace('-','')
+
+            tweet_url = ''
+            if twitter_handle and tweetid:
+                tweet_url = 'https://twitter.com/'+twitter_handle+'/status/'+str(tweetid)
 
             author = data.get('author') or data.get('Author') or site_author
 
@@ -144,7 +154,10 @@ def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_aut
             textlines = ['# ' + ntitle + '\n\n'] + textlines
 
             if not unnumbered:
-                textlines += [ '\n\n*Note:* For comments, see the [original blog post]('+site_url+linkpath+'/).\n\n' ]
+                textlines += [ '\n\n## Comments\n\n*Note:* For updated comments, see the [original blog post]('+link_url+'/)'+(' and the [anouncement tweet]('+tweet_url+')' if tweet_url else '')+'.\n\n' ]
+                post_comments = remarks_dict.get(link_url+'/')
+                if post_comments:
+                    textlines += [ '\n\n'+post_comments ]
 
             textlines += [ '\n\n---\n' ]
 
@@ -310,6 +323,52 @@ def annotate_image(cover_image, out_image, text='', feature_image=None, top_marg
     image.save(out_image,'PNG')
 
 
+def read_remarks(remarks_json_file):
+    # Read Remark42 comments from JSON file and return dict of comment HTML
+    # with post URL as key
+    import gzip, json, re
+    from collections import defaultdict
+
+    list_markers = '-+*'
+
+    def process_comment_list(comment_list, level=0):
+        # Comment tree structure
+        # [ (time, id), ..., ]
+        comment_list.sort()
+        retval = []
+        for _, comment_id in comment_list:
+            retval += process_comment(comment_id, level)
+        return retval
+
+    def process_comment(comment_id, level):
+        comment = all_comments[comment_id]
+        lmax = min(level, 2)
+        retval = [ '  '*lmax+list_markers[lmax]+' *' + comment['user']['name'] + '*: ' + re.sub('\n+', '\n', comment['text']) ]
+        return retval + process_comment_list(comment['subcomments'], level+1)
+
+    with gzip.open(remarks_json_file, 'r') as f:
+        lines = f.readlines()
+        comment_list = [json.loads(line) for line in lines[1:]]
+
+        all_comments = {}
+        post_comments = defaultdict(list)
+
+    for comment in comment_list:
+        if comment.get('delete'):
+            continue
+        comment['subcomments'] = []
+        all_comments[comment['id']] = comment
+        if comment['pid']:
+            all_comments[comment['pid']]['subcomments'].append( (comment['time'], comment['id']) )
+        else:
+            post_comments[comment['locator']['url']].append( (comment['time'], comment['id']) )
+
+    post_processed_comments = {}
+    for post_url, post_comment_list in post_comments.items():
+        post_processed_comments[post_url] = '\n'.join(process_comment_list(post_comment_list)) + '\n\n'
+
+    return post_processed_comments
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--url', type=str, required=True, help='site url')
@@ -318,6 +377,8 @@ if __name__ == '__main__':
     parser.add_argument('--posts-dir', type=str, help='posts directory, e.g., content/posts')
     parser.add_argument('--output-dir', type=str, help='output directory')
     parser.add_argument('--output', type=str, help='Name of combined output file')
+    parser.add_argument('--twitter', type=str, help='Twitter handle')
+    parser.add_argument('--remarks', type=str, help='Name of Remarks42 comments JSON .gz file')
     parser.add_argument('--css', type=str, required=True, help='CSS file path')
     parser.add_argument('--cover_image', type=str, help='Annotatable cover image file')
     parser.add_argument('--last-date-file', type=str, help='read/save last date and append to combined file name')
@@ -327,7 +388,7 @@ if __name__ == '__main__':
     parser.add_argument('files', nargs='*')
     args = parser.parse_args()
 
-    last_date_suffix = blog2book(args.posts_dir, args.output_dir, args.output, args.url, args.title, args.author, args.css, args.cover_image, args.last_date_file, args.force, args.individual, args.recent, args.files)
+    last_date_suffix = blog2book(args.posts_dir, args.output_dir, args.output, args.url, args.title, args.author, args.twitter, args.remarks, args.css, args.cover_image, args.last_date_file, args.force, args.individual, args.recent, args.files)
 
     if args.last_date_file:
         print(last_date_suffix)
