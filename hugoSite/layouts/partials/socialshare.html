@@ -6,14 +6,14 @@
   {{ if .PrevPage }}
     {{ if and (eq .PrevPage.Type "posts") (and (not .PrevPage.Params.draft) (not .PrevPage.Params.unlisted)) }}
       <span style="float: left; font-size: 1.4rem; line-height: 1.1rem; color: #008aee;">
-      <a class="link-reverse" href="{{ .PrevPage.Permalink }}?ref=header">&nbsp;«&nbsp;</a>
+      <a class="link-reverse" href="{{ .PrevPage.Permalink | relURL }}?ref=header">&nbsp;«&nbsp;</a>
       </span>
     {{ end }}
   {{ end }}
   {{ if .NextPage }}
     {{ if and (eq .NextPage.Type "posts") (and (not .NextPage.Params.draft) (not .NextPage.Params.unlisted)) }}
       <span style="float: left; font-size: 1.4rem; line-height: 1.1rem; color: #008aee;"> 
-      <a class="link-reverse" href="{{ .NextPage.Permalink }}?ref=header">&nbsp;»&nbsp;</a>
+      <a class="link-reverse" href="{{ .NextPage.Permalink | relURL }}?ref=header">&nbsp;»&nbsp;</a>
       </span>
     {{ end }}
   {{ end }}

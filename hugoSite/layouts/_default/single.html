@@ -116,7 +116,7 @@
   {{ if .PrevPage }}
   {{ if and (eq .PrevPage.Type "posts") (and (not .PrevPage.Params.draft) (not .PrevPage.Params.unlisted)) }}
   <div class="mt-2 mb-4 ml-6 mr-6">
-    <a class="link-reverse" href="{{ .PrevPage.Permalink }}?ref=footer">
+    <a class="link-reverse" href="{{ .PrevPage.Permalink | relURL }}?ref=footer">
     <span class="px-8 py-3 rounded transition-colors text-gray-500 dark:text-gray-400">« Prev:
     <span class="text-gray-800 dark:text-gray-200">
 	 {{ .PrevPage.Title | truncate 60 "..."}}
@@ -130,7 +130,7 @@
   {{ if .NextPage }}
   {{ if and (eq .NextPage.Type "posts") (and (not .NextPage.Params.draft) (not .NextPage.Params.unlisted)) }}
   <div class="mt-2 mb-4 ml-6 mr-6">
-    <a class="link-reverse" href="{{ .NextPage.Permalink }}?ref=footer">
+    <a class="link-reverse" href="{{ .NextPage.Permalink | relURL }}?ref=footer">
     <span class="px-8 py-3 rounded transition-colors text-gray-500 dark:text-gray-400">» Next:
     <span class="text-gray-800 dark:text-gray-200">
 	 {{ .NextPage.Title | truncate 60 "..."}}
