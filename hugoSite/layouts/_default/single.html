@@ -2,6 +2,21 @@
   {{ $lastmodstr := (partial "date.html" (dict "date" .Lastmod "language" $.Page.Language "format" "long")) }}
   {{ $datestr := (partial "date.html" (dict "date" .Date "language" $.Page.Language "format" "long")) }}
 
+  {{- $allposts := where .Site.RegularPages.ByDate "Type" $.Site.Params.blogDir -}}
+  {{- $postdate := .Date.Format "20060102" -}}
+  {{- $postnumber := 0 -}}
+  {{ if and (not .Params.draft) (not .Params.unlisted) }}
+    {{- $postcount := 0 -}}
+    {{ range $allposts }}
+      {{ if and (not .Params.draft) (not .Params.unlisted) }}
+        {{- $postcount = add $postcount 1 -}}
+        {{ if eq $postdate (.Date.Format "20060102") }}
+          {{- $postnumber = $postcount -}}
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+
   {{ partial "socialshare.html" . }}
   
   <article class="prose lg:prose-lg mx-auto my-8 dark:prose-dark px-4">
@@ -15,7 +30,7 @@
   </div>
   {{ end }}
 
-    <h1 class="text-2xl font-bold mb-2">{{ .Title }}</h1>
+    <h1 class="text-2xl font-bold mb-2">{{ if .Site.Params.prefixPostNumber }}{{ $postnumber }}  {{ end }}{{ .Title }}</h1>
     <div class="text-xl font-light mb-4">{{ .Description }}</div>
 
 
@@ -29,6 +44,10 @@
 
 
     <h5 class="text-sm flex items-center">
+
+    {{ if not .Site.Params.prefixPostNumber }}
+    P#{{ $postnumber }} &bull;
+    {{ end }}
 
     {{ if .Site.Params.epub }}
     <a href='/ebook/{{ .Date.Format "20060102" }}-{{ if eq .File.BaseFileName "index" }}{{ index (split .File.Path "/" | last 2 | first 1) 0 }}{{ else }}{{ .File.BaseFileName }}{{ end }}.epub'
@@ -75,8 +94,10 @@
         <circle cx="12" cy="12" r="9" />
         <polyline points="12 7 12 12 15 15" />
       </svg>
-      {{ i18n "readingTime"}}{{ .ReadingTime }}&nbsp;{{ i18n "readTime" }}m
+      {{ i18n "readingTime"}}{{ .ReadingTime }}&nbsp;{{ i18n "readTime" }}min
       &nbsp;&bull;
+
+<!--
       <svg xmlns="http://www.w3.org/2000/svg" class="mx-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
         <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
@@ -93,18 +114,19 @@
         {{- $linksOutput := delimit $cleanLinks (i18n "translationsSeparator") -}}
         &nbsp;&bull;&nbsp;{{ i18n "translationsLabel" }}&nbsp;{{ $linksOutput }}
       {{- end }}
+-->
 
-       <svg xmlns="http://www.w3.org/2000/svg" class="mx-1" width="16" height="16" stroke-width="2.5" stroke="currentColor" viewBox="0 0 50 50"><path d="M15 42h-2l1.2-1.6c.8-1.1 1.3-2.5 1.6-4.2C10.8 33.9
+      <svg xmlns="http://www.w3.org/2000/svg" class="mx-1" width="16" height="16" stroke-width="2.5" stroke="currentColor" viewBox="0 0 50 50"><path d="M15 42h-2l1.2-1.6c.8-1.1 1.3-2.5 1.6-4.2C10.8 33.9
 8 29.6 8 24c0-8.6 6.5-14 17-14s17 5.4 17 14c0 8.8-6.4 14-17 14h-.7c-1.6 1.9-4.4 4-9.3 4zm10-30c-9.4 0-15 4.5-15 12 0 6.4
 3.9 9.4 7.2 10.7l.7.3-.1.8c-.2 1.6-.5 3-1.1 4.2 3.3-.4 5.2-2.1 6.3-3.5l.3-.4H25c13.5 0 15-8.4 15-12C40 16.5 34.4 12 25
 12z"/></svg>
 
-    <a href="#comments"
+      <a href="#comments"
        style="color: #555555; border-radius: 5px 5px 5px 5px; text-decoration: none; font-weight: inherit; font-size: 0.875rem; line-height: 1.25rem;"
        class="inline-block text-sm cursor-pointer bg-gray-200 dark:bg-gray-200"
-    >
-    &nbsp;<span class="remark42__counter" data-url="{{ .Permalink }}"></span>&nbsp;comments&nbsp;
-    </a>
+      >
+      &nbsp;<span class="remark42__counter" data-url="{{ .Permalink }}"></span>&nbsp;comments&nbsp;
+      </a>
 
     </h5>
 

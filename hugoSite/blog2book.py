@@ -108,8 +108,14 @@ def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_aut
                     else:
                         textlines.append(line)
 
-            preface = "".join(frontmatter)
-            data = yaml.load(preface, Loader=yaml.FullLoader)
+            if frontmatter:
+                preface = ''.join(frontmatter)
+                data = yaml.load(preface, Loader=yaml.FullLoader)
+            else:
+                preface = ''
+                data = {}
+
+            textlines = textlines or []
 
             if data.get('draft') or data.get('Draft') or data.get('unlisted') or data.get('Unlisted'):
                 continue
@@ -145,7 +151,8 @@ def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_aut
                 textlines = ['![](image/' + Path(thumbnail).name + ')\n\n'] + textlines
 
             if pubdate:
-                textlines = ['\n<div class="pubdate">'+expand_date(pubdate)+'&nbsp;&nbsp;&nbsp;&nbsp;</div>\n\n'] + textlines
+                byline = site_title+' '+expand_date(pubdate)
+                textlines = ['\n\n['+byline+']('+link_url+')\n\n'] + textlines
 
             description = data.get('description') or data.get('Description')
             if description:
@@ -242,7 +249,7 @@ def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_aut
             # All posts
             number_offset = 0
             mdfiles = [fname for (pdate, fname, title, author, feature) in sections]
-            pandoc_cmd += [ '--toc-depth=1' ]
+            pandoc_cmd += [ '--toc-depth=1', '--number-offset=0' ]
 
         if cover_image:
             imgpath = 'image/CoverImage.png'
