@@ -23,6 +23,10 @@ googleAnalytics = "G-analyticsCode"
   epub = true
   pdf = true
 
+  # Post numbering
+  prefixPostNumber = false
+  annotatePostNumber = false
+
   website = "blog.domain"
   creator = "Blog Author"
 
