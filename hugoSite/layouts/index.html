@@ -3,6 +3,8 @@
   {{- partial "intro.html" . -}}
 
   {{- $allposts := where .Site.RegularPages.ByDate.Reverse "Type" $.Site.Params.blogDir -}}
+  {{- $publishedposts := where $allposts "Params.draft" false  -}}
+  {{- $draftposts := where $allposts "Params.draft" true  -}}
 
   <div class="text-center mb-8">
     <span class="px-8 py-3 rounded transition-colors text-gray-500 dark:text-gray-400">
@@ -11,7 +13,7 @@
   </div>
 
   <div class="container p-6 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
-    {{ range first $.Site.Params.introPosts $allposts }}
+    {{ range first $.Site.Params.introPosts $publishedposts }}
       {{ if (not .Params.unlisted) }}
         {{ .Scratch.Set "blogCardContext" "index" }}
         {{- partial "blog-card.html" . -}}
@@ -19,8 +21,7 @@
     {{ end }}
   </div>
 
-
-  {{- $featuredposts := where (after $.Site.Params.introPosts $allposts) "Params.featured" true  -}}
+  {{- $featuredposts := where (after $.Site.Params.introPosts $publishedposts) "Params.featured" true  -}}
 
   {{- with $featuredposts -}}
     <div class="text-center mb-8">
@@ -38,7 +39,7 @@
     </div>
   {{- end -}}
 
-  {{ if gt (len $allposts) $.Site.Params.introPosts }}
+  {{ if gt (len $publishedposts) $.Site.Params.introPosts }}
   <div class="text-center mb-8">
     <a class="px-8 py-3 rounded transition-colors {{ .Site.Params.ascentColor | default "bg-pink-50" }}
       text-gray-500 hover:text-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:text-white"
@@ -51,6 +52,20 @@
   {{ if $.Site.Params.futurePosts }}
   {{- partial "future.html" . -}}
   {{ end }}
+
+  {{- with $draftposts -}}
+    <div class="text-center mb-8">
+      <span class="px-8 py-3 rounded transition-colors text-gray-500 dark:text-gray-400">
+        DRAFT posts
+      </span>
+    </div>
+
+    <div class="container p-6 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
+      {{ range $draftposts}}
+          {{- partial "blog-card.html" . -}}
+      {{ end }}
+    </div>
+  {{- end -}}
 
   {{- partial "social.html" . -}}
 {{ end }}

@@ -2,9 +2,9 @@
 {{- if .IsHome -}}{{ $pctx = .Site }}{{- end -}}
 {{- $pages := slice -}}
 {{- if or $.IsHome $.IsSection -}}
-{{- $pages = $pctx.RegularPages -}}
+{{- $pages = where $pctx.RegularPages "Type" $.Site.Params.blogDir -}}
 {{- else -}}
-{{- $pages = $pctx.Pages -}}
+{{- $pages = where $pctx.Pages "Type" $.Site.Params.blogDir -}}
 {{- end -}}
 {{- $limit := .Site.Config.Services.RSS.Limit -}}
 {{- if ge $limit 1 -}}
@@ -26,7 +26,7 @@
     {{ printf "<atom:link href=%q rel=\"self\" type=%q />" .Permalink .MediaType | safeHTML }}
     {{- end -}}
     {{ range $pages }}
-      {{ if (not .Params.unlisted) }}
+      {{ if and (not .Params.draft) (not .Params.unlisted) (.Date.Before now) }}
     <item>
       <title>{{ .Title }}</title>
       <link>{{ .Permalink }}</link>
