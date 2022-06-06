@@ -3,8 +3,9 @@
   {{- partial "intro.html" . -}}
 
   {{- $allposts := where .Site.RegularPages.ByDate.Reverse "Type" $.Site.Params.blogDir -}}
-  {{- $publishedposts := where $allposts "Params.draft" false  -}}
   {{- $draftposts := where $allposts "Params.draft" true  -}}
+  {{- $publishedposts := where $allposts "Params.draft" false  -}}
+  {{- $unlistedposts := where $publishedposts "Params.unlisted" true  -}}
 
   <div class="text-center mb-8">
     <span class="px-8 py-3 rounded transition-colors text-gray-500 dark:text-gray-400">
@@ -53,6 +54,21 @@
   {{- partial "future.html" . -}}
   {{ end }}
 
+  {{ if .Site.BuildDrafts }}
+  {{- with $unlistedposts -}}
+    <div class="text-center mb-8">
+      <span class="px-8 py-3 rounded transition-colors text-gray-500 dark:text-gray-400">
+        UNLISTED posts
+      </span>
+    </div>
+
+    <div class="container p-6 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
+      {{ range $unlistedposts}}
+          {{- partial "blog-card.html" . -}}
+      {{ end }}
+    </div>
+  {{- end -}}
+
   {{- with $draftposts -}}
     <div class="text-center mb-8">
       <span class="px-8 py-3 rounded transition-colors text-gray-500 dark:text-gray-400">
@@ -66,6 +82,7 @@
       {{ end }}
     </div>
   {{- end -}}
+  {{ end }}
 
   {{- partial "social.html" . -}}
 {{ end }}
