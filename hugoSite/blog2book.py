@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Process Hugo Markdown blog posts to create book using Pandoc
+# https://learnbyexample.github.io/customizing-pandoc/
 
 # Example:
 #   blog2book.py --posts-dir=content/posts --outdir=public/ebook --output=book.epub --title=MyBlog --author="My Name" --css=pandoc/book.css --last-date-file=lastdate.txt --recent=3 pandoc/title.txt content/page/about.md content/page/links.md
@@ -183,7 +184,7 @@ def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_aut
                 f.write(last_date_val)
 
         css_path = str(Path.cwd() / css_file)
-        pdf_options = [ '-V', 'colorlinks', '-V', 'geometry:margin=1.2in', '--pdf-engine=xelatex' ]
+        pdf_options = [ '-V', 'colorlinks', '-V', 'geometry:margin=1.2in', '-V', 'mainfont=DejaVu Serif', '-V', 'monofont=DejaVu Sans Mono', '--pdf-engine=xelatex' ]
 
         if individual:
             count = 0
