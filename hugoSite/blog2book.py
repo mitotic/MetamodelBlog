@@ -183,7 +183,7 @@ def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_aut
                 f.write(last_date_val)
 
         css_path = str(Path.cwd() / css_file)
-        pdf_options = [ '-V', 'colorlinks', '-V', 'geometry:margin=1.2in' ]
+        pdf_options = [ '-V', 'colorlinks', '-V', 'geometry:margin=1.2in', '--pdf-engine=xelatex' ]
 
         if individual:
             count = 0
