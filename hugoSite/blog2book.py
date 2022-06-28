@@ -11,7 +11,7 @@ from pathlib import Path
 def expand_date(d):
     return d[:4]+'-'+d[4:6]+'-'+d[6:] if d else ''
 
-def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_author, twitter_handle, remarks_json_gzfile, css_file, cover_image, last_date_file, force, unlisted, individual, recent, filenames):
+def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_author, twitter_handle, remarks_json_gzfile, css_file, cover_image, last_date_file, force, hidden, individual, recent, filenames):
     # Creates modifed copies of markdown files (filenames) in temporary directory
     # making minor changes to Hugo markdown to work with Pandoc by extracting title etc.
     # If output_file has extension .epub or .pdf, only files of that type are created. Otherwise both types are created.
@@ -60,7 +60,7 @@ def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_aut
             fpath = Path(Path.cwd() / filename)
 
             if fpath.name.startswith('.') or fpath.name.startswith('_'):
-                # Skip hidden files
+                # Skip .* files
                 continue
 
             if fpath.name == title_name:
@@ -118,10 +118,7 @@ def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_aut
 
             textlines = textlines or []
 
-            if data.get('draft') or data.get('Draft'):
-                continue
-
-            if not unlisted and (data.get('unlisted') or data.get('Unlisted')):
+            if not hidden and (data.get('draft') or data.get('Draft') and data.get('unlisted') or data.get('Unlisted')):
                 continue
 
             title = data.get('title') or data.get('Title') or ''
@@ -287,7 +284,7 @@ def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_aut
 
         return last_date_val
 
-def annotate_image(cover_image, out_image, text='', feature_image=None, top_margin=0.1, bot_margin=0.1, fontname='DejaVuSans', fontdir='', fontsize=80, text_width=16, text_color='#000000'):
+def annotate_image(cover_image, out_image, text='', feature_image=None, top_margin=0.1, bot_margin=0.1, fontname='DejaVuSans', fontdir='', fontsize=72, text_width=16, text_color='#000000'):
     # Example: annotate_image('cover.png', 'newcover.png', text='The quick brown fox', feature_image='feature.png', top_margin=0.075, bot_margin=0.25)
     from PIL import Image, ImageDraw, ImageFont
     import site, textwrap
@@ -304,8 +301,10 @@ def annotate_image(cover_image, out_image, text='', feature_image=None, top_marg
 
     txfrac = txht / img_ht
 
+    img_margin = 0.05
+
     # Fractional available height
-    avail_frac = 1.0 - (txfrac + top_margin + bot_margin)
+    avail_frac = 1.0 - (txfrac + top_margin + img_margin + bot_margin)
 
     if feature_image and avail_frac > 0:
         try:
@@ -325,7 +324,7 @@ def annotate_image(cover_image, out_image, text='', feature_image=None, top_marg
             image2 = image2.resize( (img2_wid2, img2_ht2) )
 
             xoffset = int(0.5*(img_wid -img2_wid2))
-            yoffset = int( (top_margin + txfrac + 0.5*(avail_frac - img2_frac))*img_ht )
+            yoffset = int( (top_margin + txfrac + img_margin + 0.5*(avail_frac - img2_frac))*img_ht )
 
             image.paste(image2, (xoffset,yoffset) )
         except Exception as inst:
@@ -396,13 +395,13 @@ if __name__ == '__main__':
     parser.add_argument('--cover_image', type=str, help='Annotatable cover image file')
     parser.add_argument('--last-date-file', type=str, help='read/save last date and append to combined file name')
     parser.add_argument('--force', action='store_true', help='Force creation of files, even if present and up-to-date')
-    parser.add_argument('--unlisted', action='store_true', help='Handle single unlisted file')
+    parser.add_argument('--hidden', action='store_true', help='Handle hidden (draft/unlisted) files')
     parser.add_argument('--individual', action='store_true', help='Create individual files for each post')
     parser.add_argument('--recent', type=int, help='Create combined file of recent posts')
     parser.add_argument('files', nargs='*')
     args = parser.parse_args()
 
-    last_date_suffix = blog2book(args.posts_dir, args.output_dir, args.output, args.url, args.title, args.author, args.twitter, args.remarks, args.css, args.cover_image, args.last_date_file, args.force, args.unlisted, args.individual, args.recent, args.files)
+    last_date_suffix = blog2book(args.posts_dir, args.output_dir, args.output, args.url, args.title, args.author, args.twitter, args.remarks, args.css, args.cover_image, args.last_date_file, args.force, args.hidden, args.individual, args.recent, args.files)
 
     if args.last_date_file:
         print(last_date_suffix)
