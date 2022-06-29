@@ -219,7 +219,7 @@ def blog2book(posts_dir, output_dir, output_file, site_url, site_title, site_aut
                     create_book = subprocess.run(pandoc_cmd2, text=True, cwd=tmpdirname)
                     print('Created', indpath.name, file=sys.stderr)
 
-        if not output_file:
+        if not output_file or len(sections) < 2:
             # No combined output file
             return last_date_val
 
