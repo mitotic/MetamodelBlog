@@ -289,9 +289,9 @@ def annotate_image(cover_image, out_image, text='', feature_image=None, top_marg
     from PIL import Image, ImageDraw, ImageFont
     import site, textwrap
 
-    image = Image.open(cover_image)
-    draw  = ImageDraw.Draw(image)
-    img_wid, img_ht = image.size
+    cover = Image.open(cover_image)
+    draw  = ImageDraw.Draw(cover)
+    page_wid, page_ht = cover.size
 
     if not fontdir:
         fontdir = site.getsitepackages()[0] + '/matplotlib/mpl-data/fonts/ttf'
@@ -299,12 +299,13 @@ def annotate_image(cover_image, out_image, text='', feature_image=None, top_marg
     lines = '\n'.join(textwrap.wrap(text, width=text_width))
     txwid, txht = font.getsize_multiline(lines)
 
-    txfrac = txht / img_ht
+    txfrac = txht / page_ht
 
-    img_margin = 0.05
+    img_tmargin = 0.05
+    img_lmargin = 0.1
 
     # Fractional available height
-    avail_frac = 1.0 - (txfrac + top_margin + img_margin + bot_margin)
+    avail_frac = 1.0 - (txfrac + top_margin + img_tmargin + bot_margin)
 
     if feature_image and avail_frac > 0:
         try:
@@ -312,27 +313,27 @@ def annotate_image(cover_image, out_image, text='', feature_image=None, top_marg
             img2_wid, img2_ht = image2.size
 
             # Fractional height occupied by feature image
-            img2_frac = (img_wid * (img2_ht/img2_wid)) / img_ht
+            img2_frac = (((1-2*img_lmargin)*page_wid/img2_wid) * img2_ht) / page_ht
 
             if img2_frac > avail_frac:
                 # Shrink feature image
                 img2_frac = avail_frac
 
-            img2_ht2 = int(img2_frac * img_ht)
+            img2_ht2 = int(img2_frac * page_ht)
             img2_wid2 = int(img2_ht2*(img2_wid/img2_ht))
 
             image2 = image2.resize( (img2_wid2, img2_ht2) )
 
-            xoffset = int(0.5*(img_wid -img2_wid2))
-            yoffset = int( (top_margin + txfrac + img_margin + 0.5*(avail_frac - img2_frac))*img_ht )
+            xoffset = int(0.5*(page_wid -img2_wid2))
+            yoffset = int( (top_margin + txfrac + img_tmargin + 0.5*(avail_frac - img2_frac))*page_ht )
 
-            image.paste(image2, (xoffset,yoffset) )
+            cover.paste(image2, (xoffset,yoffset) )
         except Exception as inst:
             print('annotate_image:', inst, file=sys.stderr)
 
-    draw.multiline_text( (int(0.5*(img_wid-txwid)), int(top_margin*img_ht)), lines, fill=text_color, font=font)
+    draw.multiline_text( (int(0.5*(page_wid-txwid)), int(top_margin*page_ht)), lines, fill=text_color, font=font)
 
-    image.save(out_image,'PNG')
+    cover.save(out_image,'PNG')
 
 
 def read_remarks(remarks_json_file):
