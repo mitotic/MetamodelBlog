@@ -3,17 +3,17 @@
 &nbsp;
 <div class="social-share" class="padding-right:20px">
   <span class="px-4" style="float: left;">&nbsp;</span>
-  {{ if .PrevPage }}
-    {{ if and (eq .PrevPage.Type "posts") (and (not .PrevPage.Params.draft) (not .PrevPage.Params.unlisted)) }}
+  {{ if .PrevInSection }}
+    {{ if and (eq .PrevInSection.Type "posts") (and (not .PrevInSection.Params.draft) (not .PrevInSection.Params.unlisted)) }}
       <span style="float: left; font-size: 1.4rem; line-height: 1.1rem; color: #008aee;">
-      <a class="link-reverse" href="{{ .PrevPage.Permalink | relURL }}?ref=header">&nbsp;«&nbsp;</a>
+      <a class="link-reverse" href="{{ .PrevInSection.Permalink | relURL }}?ref=header">&nbsp;«&nbsp;</a>
       </span>
     {{ end }}
   {{ end }}
-  {{ if .NextPage }}
-    {{ if and (eq .NextPage.Type "posts") (and (not .NextPage.Params.draft) (not .NextPage.Params.unlisted)) }}
+  {{ if .NextInSection }}
+    {{ if and (eq .NextInSection.Type "posts") (and (not .NextInSection.Params.draft) (not .NextInSection.Params.unlisted)) }}
       <span style="float: left; font-size: 1.4rem; line-height: 1.1rem; color: #008aee;"> 
-      <a class="link-reverse" href="{{ .NextPage.Permalink | relURL }}?ref=header">&nbsp;»&nbsp;</a>
+      <a class="link-reverse" href="{{ .NextInSection.Permalink | relURL }}?ref=header">&nbsp;»&nbsp;</a>
       </span>
     {{ end }}
   {{ end }}
