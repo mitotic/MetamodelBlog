@@ -1,7 +1,7 @@
 <div class="search-ui absolute top-0 left-0 w-full h-full bg-white dark:bg-gray-800 hidden">
   <div class="container max-w-3xl mx-auto p-12">
     <div class="relative">
-      <div class="my-4 text-center text-2xl font-bold">Search</div>
+      <div class="my-4 text-center text-2xl font-bold">Built-in search</div>
 
       <span class="p-2 absolute right-0 top-0 cursor-pointer close-search">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5"
@@ -26,6 +26,19 @@
       <p class="font-light text-sm">Try adjusting your search query</p>
     </div>
   </div>
+
+  {{ if .Site.Params.enableSearch }}
+    {{ if .Site.Params.googleSearch }}
+  <div class="container max-w-3xl mx-auto p-12">
+    <div class="relative">
+      <div class="my-4 text-center text-2xl font-bold">Google site search (look past the Ads for results)</div>
+      <script async src="https://cse.google.com/cse.js?cx={{- .Site.Params.googleSearch -}}"></script>
+      <div class="gcse-search" data-disableWebSearch="true" data-as_sitesearch="{{- .Site.Params.website -}}"></div>
+    </div>
+  </div>
+  {{ end }}
+{{ end }}
+
 </div>
 
 {{ $fuse := resources.Get "js/fuse.min.js" }}
