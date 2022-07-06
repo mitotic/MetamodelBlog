@@ -3,9 +3,11 @@
   {{- partial "intro.html" . -}}
 
   {{- $allposts := where .Site.RegularPages.ByDate.Reverse "Type" $.Site.Params.blogDir -}}
-  {{- $draftposts := where $allposts "Params.draft" true  -}}
-  {{- $publishedposts := where $allposts "Params.draft" false  -}}
-  {{- $unlistedposts := where $publishedposts "Params.unlisted" true  -}}
+  {{- $draftposts := where $allposts "Params.draft" "==" true  -}}
+  {{- $unlistedposts := where (where $allposts "Params.draft" "!=" true) "Params.unlisted" "==" true -}}
+  {{- $publishedposts := where (where $allposts "Params.draft" "!=" true) "Params.unlisted" "!=" true -}}
+
+  {{- $featuredposts := where (after $.Site.Params.introPosts $publishedposts) "Params.featured" "==" true  -}}
 
   <div class="text-center mb-8">
     <span class="px-8 py-3 rounded transition-colors text-gray-500 dark:text-gray-400">
@@ -22,8 +24,6 @@
     {{ end }}
   </div>
 
-  {{- $featuredposts := where (after $.Site.Params.introPosts $publishedposts) "Params.featured" true  -}}
-
   {{- with $featuredposts -}}
     <div class="text-center mb-8">
       <span class="px-8 py-3 rounded transition-colors text-gray-500 dark:text-gray-400">
@@ -33,9 +33,7 @@
 
     <div class="container p-6 mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
       {{ range $featuredposts}}
-        {{ if (not .Params.unlisted) }}
-          {{- partial "blog-card.html" . -}}
-        {{ end }}
+        {{- partial "blog-card.html" . -}}
       {{ end }}
     </div>
   {{- end -}}
