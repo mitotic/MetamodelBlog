@@ -43,7 +43,7 @@
     {{ end }}
 
     {{ if .Params.author }}
-      {{ if $.Site.Params.TwitterHandle }}
+      {{ if (and $.Site.Params.TwitterHandle (eq .Params.author $.Site.Author.name) ) }}
       <a href="https://twitter.com/{{- $.Site.Params.TwitterHandle -}}"
          target="_blank" style="text-decoration-color: #a0a0a0">
         <h5 class="text-xl mb-2 text-gray-500 dark:text-gray-300">{{- .Params.author -}}</h5>
