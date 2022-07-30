@@ -48,8 +48,8 @@
   </div>
   {{ end }}
 
-  {{ if $.Site.Params.futurePosts }}
-  {{- partial "future.html" . -}}
+  {{ if $.Site.Params.futureMessage }}
+    {{- partial "future.html" . -}}
   {{ end }}
 
   {{ if .Site.BuildDrafts }}
