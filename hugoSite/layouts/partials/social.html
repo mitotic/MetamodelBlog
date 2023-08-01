@@ -1,6 +1,8 @@
   <div class="{{ .Site.Params.ascentColor | default "bg-pink-50" }} pt-2 pl-2 pr-2 dark:bg-gray-900">
   <span class="px-6 text-gray-700 dark:text-gray-400">
-    To reliably track new posts, please follow using Feedly, other RSS aggregators, or the free newsletter version of this blog on Substack.
+    To reliably track new posts, please follow using Feedly, RSS aggregators,
+    {{ if .Site.Params.homepage.social.mastodon }} Mastodon, {{ end }}
+    or the free newsletter version of this blog on Substack.
     Alternatively, you can check this website every 2&ndash;3 weeks. (<em>If you
     only follow me on Twitter, you may not see the blog announcements due to algorithmic ranking.</em>)
     <p></p>
@@ -26,6 +28,48 @@
       </li>
       {{ end }}
 
+      {{ with .Site.Params.homepage.social.twitter }}
+      <li>
+        <a style="color:#000099"
+          href="{{.}}"
+          target="_blank"
+          rel="noopener"
+          aria-label="Twitter"
+          class="p-2 inline-block rounded-full border border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-800 cursor-pointer transition-colors dark:text-gray-600 dark:hover:border-gray-300 dark:hover:text-gray-300"
+        >
+      Twitter (@{{$.Site.Params.TwitterHandle}})
+        </a>
+      </li>
+      {{ end }}
+
+      {{ if .Site.Params.homepage.social.mastodon }}
+      {{ with .Site.Params.homepage.social.mastodon }}
+      <li>
+        <a style="color:#000099"
+          href="{{.}}"
+          target="_blank"
+          rel="me"
+          aria-label="Twitter"
+          class="p-2 inline-block rounded-full border border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-800 cursor-pointer transition-colors dark:text-gray-600 dark:hover:border-gray-300 dark:hover:text-gray-300"
+        >
+      Mastodon (@{{$.Site.Params.MastodonHandle}})
+        </a>
+      </li>
+      {{ end }}
+      {{ end }}
+
+      <li>
+        <a style="color:#000099"
+          href="https://www.linkedin.com/in/r-saravanan"
+          target="_blank"
+          rel="noopener"
+          aria-label="Twitter"
+          class="p-2 inline-block rounded-full border border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-800 cursor-pointer transition-colors dark:text-gray-600 dark:hover:border-gray-300 dark:hover:text-gray-300"
+        >
+      LinkedIn
+        </a>
+      </li>
+
       <li>
         <a style="color:#000099"
           href="https://feedly.com/i/subscription/feed%2Fhttps%3A%2F%2Fmetamodel.blog%2Findex.xml"
@@ -48,20 +92,6 @@
           class="p-2 inline-block rounded-full border border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-800 cursor-pointer transition-colors dark:text-gray-600 dark:hover:border-gray-300 dark:hover:text-gray-300"
         >
       RSS
-        </a>
-      </li>
-      {{ end }}
-
-      {{ with .Site.Params.homepage.social.twitter }}
-      <li>
-        <a style="color:#000099"
-          href="{{.}}"
-          target="_blank"
-          rel="noopener"
-          aria-label="Twitter"
-          class="p-2 inline-block rounded-full border border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-800 cursor-pointer transition-colors dark:text-gray-600 dark:hover:border-gray-300 dark:hover:text-gray-300"
-        >
-      Twitter (@{{$.Site.Params.TwitterHandle}})
         </a>
       </li>
       {{ end }}

@@ -3,7 +3,7 @@
 # https://learnbyexample.github.io/customizing-pandoc/
 
 # Example:
-#   blog2book.py --posts-dir=content/posts --outdir=public/ebook --output=book.epub --title=MyBlog --author="My Name" --css=pandoc/book.css --last-date-file=lastdate.txt --recent=3 pandoc/title.txt content/page/about.md content/page/links.md
+#   blog2book.py --url=https://example.com --posts-dir=content/posts --output-dir=public/ebook --output=book.epub --title=MyBlog --author="My Name" --css=pandoc/book.css --last-date-file=lastdate.txt --recent=3 pandoc/title.txt content/page/about.md content/page/links.md
 
 import sys, os, yaml, datetime, subprocess, tempfile, argparse
 from pathlib import Path
